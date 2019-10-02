@@ -1,0 +1,11 @@
+note over browser:
+adds new note to existing notes array
+calls redrawNotes function to rerender notes list 
+which includes new note
+send new note to server to be persisted
+end note
+browser->server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+note over server:
+adds new note to data.json
+end note
+server-->browser: 201 Created {"message":"note created"}
