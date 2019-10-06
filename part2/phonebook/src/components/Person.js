@@ -1,10 +1,20 @@
 import React from "react";
 
-const Person = ({ person }) => {
+const Person = ({ person, onDelete }) => {
+  const handleClick = () => {
+    const confirm = window.confirm(
+      `Are you sure you want to delete ${person.name}?`
+    );
+    if (confirm) {
+      onDelete(person.id);
+    }
+  };
+
   return (
-    <p>
+    <div>
       {person.name} {person.number}
-    </p>
+      <button onClick={handleClick}>Delete Contact </button>
+    </div>
   );
 };
 

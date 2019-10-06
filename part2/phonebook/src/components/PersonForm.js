@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 
-const PersonForm = ({ onSubmit, persons }) => {
+const PersonForm = ({ addNewContact, persons, updateContact }) => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
 
-  const isDuplicate = name =>
-    persons.filter(person => person.name.toLowerCase() === name.toLowerCase())
-      .length > 0;
+  const findDuplicate = name =>
+    persons.find(person => person.name.toLowerCase() === name.toLowerCase());
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (isDuplicate(newName)) {
-      alert(`${newName} is already on the phonebook!!!`);
+    const duplicate = findDuplicate(newName);
+
+    if (duplicate) {
+      const confirm = window.confirm(`Update ${newName} contact info?`);
+      if (confirm) {
+        updateContact(duplicate.id, { ...duplicate, number: newNumber });
+      }
     } else {
-      onSubmit(newName, newNumber);
-      setNewName("");
-      setNewNumber("");
+      addNewContact(newName, newNumber);
     }
+    setNewName("");
+    setNewNumber("");
   };
 
   return (
