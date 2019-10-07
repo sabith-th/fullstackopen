@@ -6,7 +6,7 @@ const Person = ({ person, onDelete }) => {
       `Are you sure you want to delete ${person.name}?`
     );
     if (confirm) {
-      onDelete(person.id);
+      onDelete(person);
     }
   };
 
