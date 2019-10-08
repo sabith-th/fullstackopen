@@ -47,7 +47,7 @@ const App = () => {
     contactsService
       .deleteContact(id)
       .then(response => {
-        if (response.status === 200) {
+        if (response.status === 204) {
           setPersons(persons.filter(person => person.id !== id));
           createNotification(`${name} deleted from contact`, "success");
         }
