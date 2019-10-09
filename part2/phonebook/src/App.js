@@ -38,8 +38,17 @@ const App = () => {
     };
     contactsService
       .saveContact(newContact)
-      .then(savedContact => setPersons([...persons, savedContact]));
-    createNotification(`${newName} added to contact`, "success");
+      .then(savedContact => {
+        setPersons([...persons, savedContact]);
+        createNotification(`${newName} added to contact`, "success");
+      })
+      .catch(e => {
+        if (e.response.status === 400) {
+          createNotification(e.response.data.error, "error");
+        } else {
+          console.error(e);
+        }
+      });
     setSearchResult(null);
   };
 
@@ -59,6 +68,8 @@ const App = () => {
             "error"
           );
           setPersons(persons.filter(person => person.id !== id));
+        } else if (e.response.status === 400) {
+          createNotification(e.response.data.error, "error");
         } else {
           console.error(e);
         }
@@ -68,12 +79,20 @@ const App = () => {
   const updateContact = (id, contact) => {
     contactsService
       .updateContact(id, contact)
-      .then(updatedContact =>
+      .then(updatedContact => {
         setPersons(
           persons.map(person => (person.id !== id ? person : updatedContact))
-        )
-      );
-    createNotification(`${contact.name} contact info updated`, "success");
+        );
+        createNotification(`${contact.name} contact info updated`, "success");
+      })
+      .catch(e => {
+        if (e.response.status === 400) {
+          createNotification(e.response.data.error, "error");
+        } else {
+          console.error(e);
+        }
+      });
+
     setSearchResult(null);
   };
 
