@@ -36,65 +36,96 @@ beforeEach(async () => {
 });
 
 describe("blogs api", () => {
-  test("blogs are returned as json", async () => {
-    await api
-      .get("/api/blogs")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+  describe("get all blogs", () => {
+    test("blogs are returned as json", async () => {
+      await api
+        .get("/api/blogs")
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+    });
+
+    test("all blogs are returned", async () => {
+      const response = await api.get("/api/blogs");
+      expect(response.body.length).toBe(initialBlogs.length);
+    });
+
+    test("a specific blog is in the returned blogs", async () => {
+      const response = await api.get("/api/blogs");
+      const titles = response.body.map(r => r.title);
+      expect(titles).toContain("A New Blog");
+    });
+
+    test("unique id of a blog is named id", async () => {
+      const response = await api.get("/api/blogs");
+      expect(response.body[0].id).toBeDefined();
+    });
   });
 
-  test("all blogs are returned", async () => {
-    const response = await api.get("/api/blogs");
-    expect(response.body.length).toBe(initialBlogs.length);
+  describe("post new blog", () => {
+    test("a new blog is added to the blogs list", async () => {
+      await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+
+      const newBlogs = await api.get("/api/blogs");
+      expect(newBlogs.body.length).toBe(initialBlogs.length + 1);
+      const titles = newBlogs.body.map(b => b.title);
+      expect(titles).toContain("The Return of the Blogger");
+    });
+
+    test("default value of 0 is set for likes if likes is not provided", async () => {
+      const response = await api
+        .post("/api/blogs")
+        .send(
+          new Blog({ title: "A Phantom Blog", url: "ep1.prequeltrilog.sw" })
+        );
+
+      expect(response.body.likes).toBe(0);
+    });
+
+    test("400 Bad Request is returned if title and/or url is missing", async () => {
+      await api
+        .post("/api/blogs")
+        .send(new Blog({ title: "A Phantom Blog" }))
+        .expect(400);
+
+      await api
+        .post("/api/blogs")
+        .send(new Blog({ url: "ep1.prequeltrilog.sw" }))
+        .expect(400);
+
+      await api
+        .post("/api/blogs")
+        .send(new Blog({ Author: "Jar Jar Writes" }))
+        .expect(400);
+    });
   });
 
-  test("a specific blog is in the returned blogs", async () => {
-    const response = await api.get("/api/blogs");
-    const titles = response.body.map(r => r.title);
-    expect(titles).toContain("A New Blog");
+  describe("delete a blog", () => {
+    test("204 is returned after successful deletion of a blog", async () => {
+      const oldList = await api.get("/api/blogs");
+      const idToBeDeleted = oldList.body[0].id;
+
+      expect(oldList.body.length).toBe(initialBlogs.length);
+      await api.delete(`/api/blogs/${idToBeDeleted}`).expect(204);
+
+      const newList = await api.get("/api/blogs");
+      expect(newList.body.length).toBe(initialBlogs.length - 1);
+    });
   });
 
-  test("unique id of a blog is named id", async () => {
-    const response = await api.get("/api/blogs");
-    expect(response.body[0].id).toBeDefined();
-  });
+  describe("update a blog", () => {
+    test("number of likes of a blog is successfully updated", async () => {
+      const oldList = await api.get("/api/blogs");
+      const { id, likes } = oldList.body[0];
 
-  test("a new blog is added to the blogs list", async () => {
-    await api
-      .post("/api/blogs")
-      .send(newBlog)
-      .expect(201)
-      .expect("Content-Type", /application\/json/);
+      await api.put(`/api/blogs/${id}`).send({ likes: likes + 1 });
 
-    const newBlogs = await api.get("/api/blogs");
-    expect(newBlogs.body.length).toBe(initialBlogs.length + 1);
-    const titles = newBlogs.body.map(b => b.title);
-    expect(titles).toContain("The Return of the Blogger");
-  });
-
-  test("default value of 0 is set for likes if likes is not provided", async () => {
-    const response = await api
-      .post("/api/blogs")
-      .send(new Blog({ title: "A Phantom Blog", url: "ep1.prequeltrilog.sw" }));
-
-    expect(response.body.likes).toBe(0);
-  });
-
-  test("400 Bad Request is returned if title and/or url is missing", async () => {
-    await api
-      .post("/api/blogs")
-      .send(new Blog({ title: "A Phantom Blog" }))
-      .expect(400);
-
-    await api
-      .post("/api/blogs")
-      .send(new Blog({ url: "ep1.prequeltrilog.sw" }))
-      .expect(400);
-
-    await api
-      .post("/api/blogs")
-      .send(new Blog({ Author: "Jar Jar Writes" }))
-      .expect(400);
+      const newList = await api.get("/api/blogs");
+      expect(newList.body[0].likes).toBe(likes + 1);
+    });
   });
 });
 
