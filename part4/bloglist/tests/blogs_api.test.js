@@ -80,7 +80,7 @@ describe("blogs api", () => {
     expect(response.body.likes).toBe(0);
   });
 
-  test("400 Bad Request is returned if title or url is missing", async () => {
+  test("400 Bad Request is returned if title and/or url is missing", async () => {
     await api
       .post("/api/blogs")
       .send(new Blog({ title: "A Phantom Blog" }))
@@ -89,6 +89,11 @@ describe("blogs api", () => {
     await api
       .post("/api/blogs")
       .send(new Blog({ url: "ep1.prequeltrilog.sw" }))
+      .expect(400);
+
+    await api
+      .post("/api/blogs")
+      .send(new Blog({ Author: "Jar Jar Writes" }))
       .expect(400);
   });
 });
