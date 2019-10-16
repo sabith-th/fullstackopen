@@ -3,19 +3,22 @@ const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
   {
     title: "A New Blog",
     author: "Luke BlogWriter",
     url: "ep4.orginaltrilogy.sw",
-    likes: 1977
+    likes: 1977,
+    user: "5da6c02e601ff7939486b9ce"
   },
   {
     title: "The Blogger Writes Back",
     author: "Darth Writer",
     url: "ep5.orginaltrilogy.sw",
-    likes: 1980
+    likes: 1980,
+    user: "5da6c02e601ff7939486b9ce"
   }
 ];
 
@@ -23,16 +26,29 @@ const newBlog = new Blog({
   title: "The Return of the Blogger",
   author: "Pen Solo",
   url: "ep6.originaltrilogy.sw",
-  likes: 1983
+  likes: 1983,
+  user: "5da6c02e601ff7939486b9ce"
 });
 
+const user = { username: "tony", name: "Tony", password: "tony" };
+
+let authToken = "";
+
+const login = async () => {
+  const response = await api.post("/api/login").send(user);
+  authToken = "Bearer " + response.body.token;
+};
+
 beforeEach(async () => {
+  await User.deleteMany({});
   await Blog.deleteMany({});
 
+  await api.post("/api/users").send(user);
   const blogObjects = initialBlogs.map(blog => new Blog(blog));
   const promiseArray = blogObjects.map(blog => blog.save());
 
   await Promise.all(promiseArray);
+  await login();
 });
 
 describe("blogs api", () => {
@@ -65,6 +81,7 @@ describe("blogs api", () => {
     test("a new blog is added to the blogs list", async () => {
       await api
         .post("/api/blogs")
+        .set("Authorization", authToken)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -78,6 +95,7 @@ describe("blogs api", () => {
     test("default value of 0 is set for likes if likes is not provided", async () => {
       const response = await api
         .post("/api/blogs")
+        .set("Authorization", authToken)
         .send(
           new Blog({ title: "A Phantom Blog", url: "ep1.prequeltrilog.sw" })
         );
@@ -88,16 +106,19 @@ describe("blogs api", () => {
     test("400 Bad Request is returned if title and/or url is missing", async () => {
       await api
         .post("/api/blogs")
+        .set("Authorization", authToken)
         .send(new Blog({ title: "A Phantom Blog" }))
         .expect(400);
 
       await api
         .post("/api/blogs")
+        .set("Authorization", authToken)
         .send(new Blog({ url: "ep1.prequeltrilog.sw" }))
         .expect(400);
 
       await api
         .post("/api/blogs")
+        .set("Authorization", authToken)
         .send(new Blog({ Author: "Jar Jar Writes" }))
         .expect(400);
     });
@@ -105,14 +126,37 @@ describe("blogs api", () => {
 
   describe("delete a blog", () => {
     test("204 is returned after successful deletion of a blog", async () => {
-      const oldList = await api.get("/api/blogs");
-      const idToBeDeleted = oldList.body[0].id;
+      const response = await api
+        .post("/api/blogs")
+        .set("Authorization", authToken)
+        .send(
+          new Blog({ title: "A Phantom Blog", url: "ep1.prequeltrilog.sw" })
+        );
 
-      expect(oldList.body.length).toBe(initialBlogs.length);
-      await api.delete(`/api/blogs/${idToBeDeleted}`).expect(204);
+      const oldList = await api.get("/api/blogs");
+      const idToBeDeleted = response.body.id;
+
+      expect(oldList.body.length).toBe(initialBlogs.length + 1);
+      await api
+        .delete(`/api/blogs/${idToBeDeleted}`)
+        .set("Authorization", authToken)
+        .expect(204);
 
       const newList = await api.get("/api/blogs");
-      expect(newList.body.length).toBe(initialBlogs.length - 1);
+      expect(newList.body.length).toBe(initialBlogs.length);
+    });
+
+    test("401 unauthorized is returned if user tries to delete a blog not owned by him", async () => {
+      const oldList = await api.get("/api/blogs");
+      const idToBeDeleted = oldList.body[0].id;
+      expect(oldList.body.length).toBe(initialBlogs.length);
+      await api
+        .delete(`/api/blogs/${idToBeDeleted}`)
+        .set("Authorization", authToken)
+        .expect(401);
+
+      const newList = await api.get("/api/blogs");
+      expect(newList.body.length).toBe(oldList.body.length);
     });
   });
 
