@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import blogsService from "../services/blogs";
 
@@ -8,13 +9,17 @@ const AddBlog = ({ updateBlogs }) => {
   const [visible, setVisible] = useState(false);
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    toggleVisibility();
-    const newBlog = await blogsService.create({ title, author, url });
-    updateBlogs(newBlog);
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+    try {
+      e.preventDefault();
+      toggleVisibility();
+      const newBlog = await blogsService.create({ title, author, url });
+      updateBlogs(newBlog);
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+    } catch (e) {
+      console.log("Exception creating new blog", e);
+    }
   };
 
   const toggleVisibility = () => setVisible(!visible);
@@ -43,6 +48,10 @@ const AddBlog = ({ updateBlogs }) => {
   ) : (
     <button onClick={toggleVisibility}>new note</button>
   );
+};
+
+AddBlog.propTypes = {
+  updateBlogs: PropTypes.func.isRequired
 };
 
 export default AddBlog;
