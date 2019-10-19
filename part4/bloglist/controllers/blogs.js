@@ -5,7 +5,11 @@ const User = require("../models/user");
 
 blogsRouter.get("/", async (request, response, next) => {
   try {
-    const blogs = await Blog.find({}).populate("user", { name: 1, id: 1 });
+    const blogs = await Blog.find({}).populate("user", {
+      name: 1,
+      id: 1,
+      username: 1
+    });
     response.json(blogs.map(blog => blog.toJSON()));
   } catch (e) {
     next(e);
@@ -32,7 +36,12 @@ blogsRouter.post("/", async (request, response, next) => {
     const savedBlog = await blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
-    response.status(201).json(savedBlog.toJSON());
+    const updatedBlog = await Blog.findById(savedBlog.id).populate("user", {
+      name: 1,
+      id: 1,
+      username: 1
+    });
+    response.status(201).json(updatedBlog.toJSON());
   } catch (e) {
     next(e);
   }
