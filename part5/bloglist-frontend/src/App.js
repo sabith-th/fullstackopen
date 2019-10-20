@@ -102,7 +102,7 @@ const App = () => {
         <Notification notification={notification} />
       ) : null}
       {user !== null ? (
-        <div>
+        <div className="blogs-section">
           {user.name} logged in
           <button onClick={logoutUser}>logout</button>
           <br />
@@ -122,11 +122,12 @@ const App = () => {
           <AddBlog updateBlogs={updateBlogs} />
         </div>
       ) : (
-        <div>
+        <div className="login-section">
           <h2>Log in to application</h2>
           <LoginForm
             loginUser={loginUser}
             createNotification={createNotification}
+            className="login-form"
           />
         </div>
       )}

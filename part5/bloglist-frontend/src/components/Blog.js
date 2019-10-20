@@ -35,7 +35,7 @@ const Blog = ({ blog, updateBlogLikes, user, deleteBlog }) => {
   };
 
   return (
-    <div>
+    <div className="blog-item">
       <div className="blog-title" onClick={() => setShowDetails(!showDetails)}>
         {blog.title} {blog.author}
       </div>
