@@ -1,17 +1,21 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
+import { useField } from "../hooks";
 import loginService from "../services/login";
 
 const LoginForm = ({ loginUser, createNotification }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const { reset: resetUsername, ...username } = useField("text");
+  const { reset: resetPassword, ...password } = useField("password");
 
   const handleLogin = async e => {
     e.preventDefault();
     try {
-      const user = await loginService.login({ username, password });
-      setUsername("");
-      setPassword("");
+      const user = await loginService.login({
+        username: username.value,
+        password: password.value
+      });
+      resetUsername();
+      resetPassword();
       loginUser(user);
     } catch (e) {
       createNotification("Invalid username or password", "error");
@@ -21,16 +25,10 @@ const LoginForm = ({ loginUser, createNotification }) => {
   return (
     <form onSubmit={handleLogin}>
       <div>
-        username:{" "}
-        <input value={username} onChange={e => setUsername(e.target.value)} />
+        username: <input {...username} />
       </div>
       <div>
-        password:{" "}
-        <input
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          type="password"
-        />
+        password: <input {...password} />
       </div>
       <div>
         <button type="submit">login</button>

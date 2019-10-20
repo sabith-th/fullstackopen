@@ -1,22 +1,28 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import { useField } from "../hooks";
 import blogsService from "../services/blogs";
 
 const AddBlog = ({ updateBlogs }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const { reset: resetTitle, ...title } = useField("text");
+  const { reset: resetAuthor, ...author } = useField("text");
+  const { reset: resetUrl, ...url } = useField("text");
+
   const [visible, setVisible] = useState(false);
 
   const handleSubmit = async e => {
     try {
       e.preventDefault();
       toggleVisibility();
-      const newBlog = await blogsService.create({ title, author, url });
+      const newBlog = await blogsService.create({
+        title: title.value,
+        author: author.value,
+        url: url.value
+      });
       updateBlogs(newBlog);
-      setTitle("");
-      setAuthor("");
-      setUrl("");
+      resetTitle();
+      resetAuthor();
+      resetUrl();
     } catch (e) {
       console.log("Exception creating new blog", e);
     }
@@ -29,15 +35,13 @@ const AddBlog = ({ updateBlogs }) => {
       <h2>Create new blog</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          title:{" "}
-          <input value={title} onChange={e => setTitle(e.target.value)} />
+          title: <input {...title} />
         </div>
         <div>
-          author:{" "}
-          <input value={author} onChange={e => setAuthor(e.target.value)} />
+          author: <input {...author} />
         </div>
         <div>
-          url: <input value={url} onChange={e => setUrl(e.target.value)} />
+          url: <input {...url} />
         </div>
         <button type="submit">create</button>
         <button type="button" onClick={toggleVisibility}>
