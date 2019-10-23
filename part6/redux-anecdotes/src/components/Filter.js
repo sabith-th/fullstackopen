@@ -1,10 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
 import { setFilter } from "../reducers/filterReducer";
 
-const Filter = ({ store }) => {
+const Filter = ({ setFilter }) => {
   const handleChange = e => {
     const filter = e.target.value;
-    store.dispatch(setFilter(filter));
+    setFilter(filter);
   };
 
   const style = {
@@ -18,4 +19,7 @@ const Filter = ({ store }) => {
   );
 };
 
-export default Filter;
+export default connect(
+  null,
+  { setFilter }
+)(Filter);
