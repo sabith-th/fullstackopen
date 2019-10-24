@@ -5,6 +5,7 @@ import {
   createNotification,
   removeNotification
 } from "../reducers/notificationReducer";
+import anecdotesService from "../services/anecdotesService";
 
 const AnecdoteList = ({
   anecdotes,
@@ -12,8 +13,12 @@ const AnecdoteList = ({
   createNotification,
   removeNotification
 }) => {
-  const vote = anecdote => {
-    addVote(anecdote.id);
+  const vote = async anecdote => {
+    const newAnecdote = await anecdotesService.addVote(anecdote.id, {
+      ...anecdote,
+      votes: anecdote.votes + 1
+    });
+    addVote(newAnecdote);
     createNotification(`You voted for ${anecdote.content}`);
     setTimeout(() => {
       removeNotification();
