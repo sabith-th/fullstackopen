@@ -2,6 +2,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import { useHistory, withRouter } from "react-router-dom";
+import {
+  Button,
+  Divider,
+  Header,
+  Icon,
+  Label,
+  Segment
+} from "semantic-ui-react";
 import { deleteBlog, updateLikes } from "../../reducers/blogsReducer";
 
 const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
@@ -19,22 +27,34 @@ const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
   };
 
   return blog ? (
-    <div className="blog-item">
-      <div className="blog-title">
+    <Segment>
+      <Header>
         {blog.title} by {blog.author}
-      </div>
-      <div className="blog-details">
-        <a href={blog.url}>{blog.url}</a>
-        <p>
-          Likes: {blog.likes}
-          <button onClick={likeBlog}>like</button>
-        </p>
-        <p>added by {blog.user.name}</p>
-        {user && user.username === blog.user.username ? (
-          <button onClick={handleDelete}>remove</button>
-        ) : null}
-      </div>
-    </div>
+      </Header>
+      <p>
+        URL: <a href={blog.url}>{blog.url}</a>
+      </p>
+      <Label as="a" basic horizontal>
+        Added by {blog.user.name}
+      </Label>
+      <Divider />
+      <Button as="div" labelPosition="right">
+        <Button icon onClick={likeBlog}>
+          <Icon name="heart" />
+          Like
+        </Button>
+        <Label as="a" basic pointing="left">
+          {blog.likes}
+        </Label>
+      </Button>
+
+      {user && user.username === blog.user.username ? (
+        <Button icon labelPosition="left" onClick={handleDelete} color="red">
+          <Icon name="delete" />
+          Delete
+        </Button>
+      ) : null}
+    </Segment>
   ) : null;
 };
 

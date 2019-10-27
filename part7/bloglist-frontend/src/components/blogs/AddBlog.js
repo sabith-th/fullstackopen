@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { Button, Form, Icon, Segment } from "semantic-ui-react";
 import { useField } from "../../hooks";
 import { createBlog } from "../../reducers/blogsReducer";
-import blogsService from "../../services/blogs";
 
 const AddBlog = ({ createBlog }) => {
   const { reset: resetTitle, ...title } = useField("text");
@@ -12,15 +12,15 @@ const AddBlog = ({ createBlog }) => {
 
   const [visible, setVisible] = useState(false);
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     try {
       e.preventDefault();
       toggleVisibility();
-      const newBlog = await blogsService.create({
+      const newBlog = {
         title: title.value,
         author: author.value,
         url: url.value
-      });
+      };
       createBlog(newBlog);
       resetTitle();
       resetAuthor();
@@ -33,26 +33,35 @@ const AddBlog = ({ createBlog }) => {
   const toggleVisibility = () => setVisible(!visible);
 
   return visible ? (
-    <div>
+    <Segment>
       <h2>Create new blog</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          title: <input {...title} />
-        </div>
-        <div>
-          author: <input {...author} />
-        </div>
-        <div>
-          url: <input {...url} />
-        </div>
-        <button type="submit">create</button>
-        <button type="button" onClick={toggleVisibility}>
-          cancel
-        </button>
-      </form>
-    </div>
+      <Form onSubmit={handleSubmit}>
+        <Form.Field>
+          <label>Title: </label>
+          <input {...title} />
+        </Form.Field>
+        <Form.Field>
+          <label>Author: </label>
+          <input {...author} />
+        </Form.Field>
+        <Form.Field>
+          <label>URL: </label>
+          <input {...url} />
+        </Form.Field>
+        <Button.Group>
+          <Button onClick={toggleVisibility}>Cancel</Button>
+          <Button.Or />
+          <Button positive type="submit">
+            Save
+          </Button>
+        </Button.Group>
+      </Form>
+    </Segment>
   ) : (
-    <button onClick={toggleVisibility}>new note</button>
+    <Button icon onClick={toggleVisibility}>
+      <Icon name="blogger" />
+      New Blog
+    </Button>
   );
 };
 

@@ -1,20 +1,21 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { Header, List, Segment } from "semantic-ui-react";
 import { getAllUsers } from "../../reducers/usersReducer";
 
 const UserDetails = ({ user }) => {
   const buildUserProfile = user => {
     return (
-      <div>
-        <h3>{user.name}</h3>
-        <h4>Added Blogs</h4>
-        <ul>
+      <Segment>
+        <Header>{user.name}</Header>
+        <Header as="h4">Added Blogs</Header>
+        <List divided>
           {user.blogs.map(blog => (
-            <li key={blog.id}>{blog.title}</li>
+            <List.Item key={blog.id}>{blog.title}</List.Item>
           ))}
-        </ul>
-      </div>
+        </List>
+      </Segment>
     );
   };
 

@@ -1,13 +1,17 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
+import { Message } from "semantic-ui-react";
 
 const Notification = ({ notifications }) => {
   const mapMessages = () =>
     notifications.map(({ id, status, message }) => (
-      <div className={status === "success" ? "success" : "error"} key={id}>
-        {message}
-      </div>
+      <Message
+        key={id}
+        header={message}
+        negative={status === "error"}
+        positive={status === "success"}
+      />
     ));
 
   return <div>{mapMessages()}</div>;

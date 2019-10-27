@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { Header, Segment, Table } from "semantic-ui-react";
 import { getAllUsers } from "../../reducers/usersReducer";
 
 const Users = ({ users, getAllUsers }) => {
@@ -11,30 +12,30 @@ const Users = ({ users, getAllUsers }) => {
   const buildUsersList = users =>
     users.map(user => {
       return (
-        <tr key={user.id}>
-          <td>
+        <Table.Row key={user.id}>
+          <Table.Cell>
             <Link to={`/users/${user.id}`}>{user.name}</Link>
-          </td>
-          <td>{user.blogs.length}</td>
-        </tr>
+          </Table.Cell>
+          <Table.Cell>{user.blogs.length}</Table.Cell>
+        </Table.Row>
       );
     });
 
   return (
-    <div>
-      <h2>Users</h2>
+    <Segment>
+      <Header>Users</Header>
       {users && users.length && (
-        <table>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Blogs Created</th>
-            </tr>
-          </thead>
-          <tbody>{buildUsersList(users)}</tbody>
-        </table>
+        <Table celled>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>User</Table.HeaderCell>
+              <Table.HeaderCell>Blogs Created</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>{buildUsersList(users)}</Table.Body>
+        </Table>
       )}
-    </div>
+    </Segment>
   );
 };
 

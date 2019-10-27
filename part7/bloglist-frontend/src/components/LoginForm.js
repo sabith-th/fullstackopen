@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { Button, Form, Header, Segment } from "semantic-ui-react";
 import { useField } from "../hooks";
 import { loginUser } from "../reducers/userReducer";
 
@@ -20,20 +21,20 @@ const LoginForm = ({ loginUser }) => {
   };
 
   return (
-    <div className="login-section">
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username: <input {...username} />
-        </div>
-        <div>
-          password: <input {...password} />
-        </div>
-        <div>
-          <button type="submit">login</button>
-        </div>
-      </form>
-    </div>
+    <Segment className="login-section">
+      <Header as="h2">Log in to application</Header>
+      <Form onSubmit={handleLogin}>
+        <Form.Field>
+          <label>Username: </label>
+          <input {...username} />
+        </Form.Field>
+        <Form.Field>
+          <label>Password: </label>
+          <input {...password} />
+        </Form.Field>
+        <Button type="submit">login</Button>
+      </Form>
+    </Segment>
   );
 };
 

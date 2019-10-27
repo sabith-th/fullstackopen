@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import { Container, Header } from "semantic-ui-react";
 import Blog from "./components/blogs/Blog";
 import Blogs from "./components/blogs/Blogs";
 import LoginForm from "./components/LoginForm";
@@ -21,10 +22,9 @@ const App = ({ initUser, initializeBlogs, user }) => {
   }, [initializeBlogs]);
 
   return (
-    <div>
-      <h1>Blogs</h1>
+    <Container>
+      <Header as="h1">Blogs</Header>
       <Router>
-        <Notification />
         <Navigation />
         <Route exact path="/">
           <Blogs />
@@ -47,7 +47,8 @@ const App = ({ initUser, initializeBlogs, user }) => {
           render={() => (user ? <Redirect to="/blogs" /> : <LoginForm />)}
         />
       </Router>
-    </div>
+      <Notification />
+    </Container>
   );
 };
 
