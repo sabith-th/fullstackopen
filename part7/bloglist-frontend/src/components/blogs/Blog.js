@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
 import { useHistory, withRouter } from "react-router-dom";
-import { deleteBlog, updateLikes } from "../reducers/blogsReducer";
+import { deleteBlog, updateLikes } from "../../reducers/blogsReducer";
 
 const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
   const history = useHistory();

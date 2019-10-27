@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Blog from "./components/Blog";
-import Blogs from "./components/Blogs";
+import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import Blog from "./components/blogs/Blog";
+import Blogs from "./components/blogs/Blogs";
 import LoginForm from "./components/LoginForm";
 import Navigation from "./components/Navigation";
 import Notification from "./components/Notification";
-import UserDetails from "./components/UserDetails";
-import Users from "./components/Users";
+import UserDetails from "./components/users/UserDetails";
+import Users from "./components/users/Users";
 import { initializeBlogs, sortBlogs } from "./reducers/blogsReducer";
 import { initUser, logoutUser } from "./reducers/userReducer";
 
-const App = ({ initUser, initializeBlogs }) => {
+const App = ({ initUser, initializeBlogs, user }) => {
   useEffect(() => {
     initUser();
   }, [initUser]);
@@ -41,9 +41,11 @@ const App = ({ initUser, initializeBlogs }) => {
         <Route exact path="/users/:id">
           <UserDetails />
         </Route>
-        <Route exact path="/login">
-          <LoginForm className="login-form" />
-        </Route>
+        <Route
+          exact
+          path="/login"
+          render={() => (user ? <Redirect to="/blogs" /> : <LoginForm />)}
+        />
       </Router>
     </div>
   );

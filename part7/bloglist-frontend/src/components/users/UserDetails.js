@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { getAllUsers } from "../reducers/usersReducer";
+import { getAllUsers } from "../../reducers/usersReducer";
 
 const UserDetails = ({ user }) => {
   const buildUserProfile = user => {

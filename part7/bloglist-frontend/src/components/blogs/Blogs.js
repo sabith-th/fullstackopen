@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { sortBlogs } from "../reducers/blogsReducer";
+import { sortBlogs } from "../../reducers/blogsReducer";
 import AddBlog from "./AddBlog";
 import BlogList from "./BlogList";
 

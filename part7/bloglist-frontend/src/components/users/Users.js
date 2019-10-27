@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAllUsers } from "../reducers/usersReducer";
+import { getAllUsers } from "../../reducers/usersReducer";
 
 const Users = ({ users, getAllUsers }) => {
   useEffect(() => {

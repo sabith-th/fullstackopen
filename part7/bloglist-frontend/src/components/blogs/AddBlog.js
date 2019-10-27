@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { useField } from "../hooks";
-import { createBlog } from "../reducers/blogsReducer";
-import blogsService from "../services/blogs";
+import { useField } from "../../hooks";
+import { createBlog } from "../../reducers/blogsReducer";
+import blogsService from "../../services/blogs";
 
 const AddBlog = ({ createBlog }) => {
   const { reset: resetTitle, ...title } = useField("text");
