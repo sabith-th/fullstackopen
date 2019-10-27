@@ -1,50 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import AddBlog from "./components/AddBlog";
-import BlogList from "./components/BlogList";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
+import Navigation from "./components/Navigation";
 import Notification from "./components/Notification";
+import UserDetails from "./components/UserDetails";
+import Users from "./components/Users";
 import { initializeBlogs, sortBlogs } from "./reducers/blogsReducer";
 import { initUser, logoutUser } from "./reducers/userReducer";
 
-const App = ({ initializeBlogs, user, initUser, logoutUser, sortBlogs }) => {
-  const [sortAscending, setSortAscending] = useState(false);
-
-  const sort = () => {
-    sortBlogs(sortAscending);
-    setSortAscending(!sortAscending);
-  };
-
-  useEffect(() => {
-    initializeBlogs();
-  }, [initializeBlogs]);
-
+const App = ({ initUser }) => {
   useEffect(() => {
     initUser();
   }, [initUser]);
 
   return (
     <div>
-      <Notification />
       <h1>Blogs</h1>
-      {user !== null ? (
-        <div className="blogs-section">
-          {user.name} logged in
-          <button onClick={() => logoutUser()}>logout</button>
-          <br />
-          <br />
-          <button onClick={sort}>
-            sort {sortAscending ? "ascending" : "descending"}
-          </button>
-          <BlogList />
-          <AddBlog />
-        </div>
-      ) : (
-        <div className="login-section">
-          <h2>Log in to application</h2>
+      <Router>
+        <Notification />
+        <Navigation />
+        <Route exact path="/">
+          <Blogs />
+        </Route>
+        <Route exact path="/users">
+          <Users />
+        </Route>
+        <Route exact path="/users/:id">
+          <UserDetails />
+        </Route>
+        <Route exact path="/login">
           <LoginForm className="login-form" />
-        </div>
-      )}
+        </Route>
+      </Router>
     </div>
   );
 };

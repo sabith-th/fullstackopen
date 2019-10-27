@@ -29,7 +29,7 @@ const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
           <button onClick={likeBlog}>like</button>
         </p>
         <p>added by {blog.user.name}</p>
-        {user.username === blog.user.username ? (
+        {user && user.username === blog.user.username ? (
           <button onClick={handleDelete}>remove</button>
         ) : null}
       </div>
@@ -49,7 +49,6 @@ const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   updateLikes: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
   deleteBlog: PropTypes.func.isRequired
 };
 
