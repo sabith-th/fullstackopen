@@ -4,7 +4,7 @@ import { setNotification } from "./notificationReducer";
 const reducer = (state = [], action) => {
   switch (action.type) {
     case "INIT_BLOGS":
-      return action.data;
+      return [...action.data];
     case "NEW_BLOG":
       return [...state, action.data];
     case "UPDATE_LIKES":
@@ -61,7 +61,7 @@ export const updateLikes = blog => {
       const updatedBlog = await blogsService.updateLikes(blog);
       dispatch({
         type: "UPDATE_LIKES",
-        data: updatedBlog
+        data: { ...blog, likes: updatedBlog.likes }
       });
       dispatch(
         setNotification(

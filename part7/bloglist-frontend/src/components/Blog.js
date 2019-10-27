@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
+import { useHistory, withRouter } from "react-router-dom";
 import { deleteBlog, updateLikes } from "../reducers/blogsReducer";
 
 const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
-  const [showDetails, setShowDetails] = useState(false);
-
+  const history = useHistory();
   const likeBlog = () => {
     updateLikes({ ...blog, likes: blog.likes + 1 });
   };
@@ -14,15 +14,16 @@ const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
     const confirm = window.confirm(`Remove ${blog.title} by ${blog.author} ?`);
     if (confirm) {
       deleteBlog(blog);
+      history.push("/blogs");
     }
   };
 
-  const detailsBox = () => {
-    return (
+  return blog ? (
+    <div className="blog-item">
+      <div className="blog-title">
+        {blog.title} by {blog.author}
+      </div>
       <div className="blog-details">
-        <p>
-          {blog.title} by {blog.author}
-        </p>
         <a href={blog.url}>{blog.url}</a>
         <p>
           Likes: {blog.likes}
@@ -33,32 +34,26 @@ const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
           <button onClick={handleDelete}>remove</button>
         ) : null}
       </div>
-    );
-  };
-
-  return (
-    <div className="blog-item">
-      <div className="blog-title" onClick={() => setShowDetails(!showDetails)}>
-        {blog.title} {blog.author}
-      </div>
-      {showDetails ? detailsBox() : null}
     </div>
-  );
+  ) : null;
 };
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
   updateLikes: PropTypes.func.isRequired,
   deleteBlog: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
+  const { id } = ownProps.match.params;
   return {
-    user: state.user
+    user: state.user,
+    blog: state.blogs.find(blog => blog.id === id)
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { updateLikes, deleteBlog }
-)(Blog);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { updateLikes, deleteBlog }
+  )(Blog)
+);

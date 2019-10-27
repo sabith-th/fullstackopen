@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { initializeBlogs, sortBlogs } from "../reducers/blogsReducer";
+import { sortBlogs } from "../reducers/blogsReducer";
 import AddBlog from "./AddBlog";
 import BlogList from "./BlogList";
 
-const Blogs = ({ sortBlogs, initializeBlogs }) => {
+const Blogs = ({ sortBlogs }) => {
   const [sortAscending, setSortAscending] = useState(false);
 
   const sort = () => {
     sortBlogs(sortAscending);
     setSortAscending(!sortAscending);
   };
-
-  useEffect(() => {
-    initializeBlogs();
-  }, [initializeBlogs]);
 
   return (
     <div className="blogs-section">
@@ -29,5 +25,5 @@ const Blogs = ({ sortBlogs, initializeBlogs }) => {
 
 export default connect(
   null,
-  { sortBlogs, initializeBlogs }
+  { sortBlogs }
 )(Blogs);

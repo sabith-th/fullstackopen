@@ -1,11 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
-import Blog from "./Blog";
+import { Link } from "react-router-dom";
 
 const BlogList = ({ blogs }) => {
   const buildBlogsList = blogs =>
-    blogs.map(blog => <Blog key={blog.id} blog={blog} />);
-  return blogs && buildBlogsList(blogs);
+    blogs.map(blog => (
+      <li key={blog.id}>
+        <Link to={`/blogs/${blog.id}`}>
+          {blog.title} by {blog.author}
+        </Link>
+      </li>
+    ));
+
+  return blogs ? <ul>{buildBlogsList(blogs)}</ul> : null;
 };
 
 const mapStateToProps = state => {

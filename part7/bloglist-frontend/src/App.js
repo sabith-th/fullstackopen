@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import Blog from "./components/Blog";
 import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
 import Navigation from "./components/Navigation";
@@ -10,10 +11,14 @@ import Users from "./components/Users";
 import { initializeBlogs, sortBlogs } from "./reducers/blogsReducer";
 import { initUser, logoutUser } from "./reducers/userReducer";
 
-const App = ({ initUser }) => {
+const App = ({ initUser, initializeBlogs }) => {
   useEffect(() => {
     initUser();
   }, [initUser]);
+
+  useEffect(() => {
+    initializeBlogs();
+  }, [initializeBlogs]);
 
   return (
     <div>
@@ -23,6 +28,12 @@ const App = ({ initUser }) => {
         <Navigation />
         <Route exact path="/">
           <Blogs />
+        </Route>
+        <Route exact path="/blogs">
+          <Blogs />
+        </Route>
+        <Route exact path="/blogs/:id">
+          <Blog />
         </Route>
         <Route exact path="/users">
           <Users />
