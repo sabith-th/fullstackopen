@@ -7,12 +7,20 @@ import {
   Divider,
   Header,
   Icon,
+  Input,
   Label,
+  List,
   Segment
 } from "semantic-ui-react";
-import { deleteBlog, updateLikes } from "../../reducers/blogsReducer";
+import { useField } from "../../hooks";
+import {
+  addComment,
+  deleteBlog,
+  updateLikes
+} from "../../reducers/blogsReducer";
 
-const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
+const Blog = ({ blog, updateLikes, user, deleteBlog, addComment }) => {
+  const { reset: resetComment, ...comment } = useField("text");
   const history = useHistory();
   const likeBlog = () => {
     updateLikes({ ...blog, likes: blog.likes + 1 });
@@ -25,6 +33,18 @@ const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
       history.push("/blogs");
     }
   };
+
+  const handleAddComment = () => {
+    addComment(blog.id, comment.value);
+    resetComment();
+  };
+
+  const buildCommentsList = comments =>
+    comments.map((comment, index) => (
+      <List.Item key={comment + index}>
+        <Icon name="comment" /> {comment}
+      </List.Item>
+    ));
 
   return blog ? (
     <Segment>
@@ -47,13 +67,21 @@ const Blog = ({ blog, updateLikes, user, deleteBlog }) => {
           {blog.likes}
         </Label>
       </Button>
-
       {user && user.username === blog.user.username ? (
         <Button icon labelPosition="left" onClick={handleDelete} color="red">
           <Icon name="delete" />
           Delete
         </Button>
       ) : null}
+      <Divider />
+      <Header as="h4">Comments</Header>
+      <List>{buildCommentsList(blog.comments)}</List>
+      <Input
+        fluid
+        action={{ icon: "plus", onClick: handleAddComment }}
+        placeholder="Add new comment"
+        {...comment}
+      />
     </Segment>
   ) : null;
 };
@@ -74,6 +102,6 @@ const mapStateToProps = (state, ownProps) => {
 export default withRouter(
   connect(
     mapStateToProps,
-    { updateLikes, deleteBlog }
+    { updateLikes, deleteBlog, addComment }
   )(Blog)
 );

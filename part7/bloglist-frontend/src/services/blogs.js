@@ -33,4 +33,15 @@ const deleteBlog = blog => {
   return axios.delete(`${BASE_URL}/${blog.id}`, config);
 };
 
-export default { getAll, setToken, create, updateLikes, deleteBlog };
+const addComment = async (id, comment) => {
+  return axios.post(`${BASE_URL}/${id}/comments`, { comment });
+};
+
+export default {
+  getAll,
+  setToken,
+  create,
+  updateLikes,
+  deleteBlog,
+  addComment
+};

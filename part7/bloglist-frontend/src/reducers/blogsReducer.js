@@ -17,6 +17,13 @@ const reducer = (state = [], action) => {
       return [...state].sort((a, b) => a.likes - b.likes);
     case "SORT_DESCENDING":
       return [...state].sort((a, b) => b.likes - a.likes);
+    case "ADD_COMMENT": {
+      return state.map(blog =>
+        blog.id !== action.data.id
+          ? blog
+          : { ...blog, comments: [...blog.comments, action.data.comment] }
+      );
+    }
     default:
       return state;
   }
@@ -107,6 +114,24 @@ export const sortBlogs = (sortAscending = true) => {
   }
   return {
     type: "SORT_DESCENDING"
+  };
+};
+
+export const addComment = (id, comment) => {
+  return async dispatch => {
+    try {
+      await blogsService.addComment(id, comment);
+      dispatch({
+        type: "ADD_COMMENT",
+        data: {
+          id,
+          comment
+        }
+      });
+    } catch (e) {
+      console.log("Error adding comment ", e);
+      dispatch(setNotification("Error adding new comment", "error", 3));
+    }
   };
 };
 

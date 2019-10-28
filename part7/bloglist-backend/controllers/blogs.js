@@ -86,4 +86,21 @@ blogsRouter.put("/:id", async (request, response, next) => {
   }
 });
 
+blogsRouter.post("/:id/comments", async (request, response, next) => {
+  try {
+    const comment = request.body.comment;
+    if (comment === null || comment.length === 0) {
+      return response
+        .status(400)
+        .json({ error: "comment has to have length greater than zero" });
+    }
+    const blog = await Blog.findById(request.params.id);
+    blog.comments = blog.comments.concat(comment);
+    blog.save();
+    return response.status(201).json({ message: "comment added" });
+  } catch (e) {
+    next(e);
+  }
+});
+
 module.exports = blogsRouter;
