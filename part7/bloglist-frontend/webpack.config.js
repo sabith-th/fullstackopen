@@ -17,7 +17,8 @@ const config = (env, argv) => {
     devServer: {
       contentBase: path.resolve(__dirname, "build"),
       compress: true,
-      port: 3000
+      port: 3000,
+      historyApiFallback: true
     },
     devtool: "source-map",
     module: {
@@ -26,7 +27,8 @@ const config = (env, argv) => {
           test: /\.js$/,
           loader: "babel-loader",
           query: {
-            presets: ["@babel/preset-env", "@babel/preset-react"]
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+            plugins: ["@babel/plugin-proposal-class-properties", "istanbul"]
           }
         },
         {

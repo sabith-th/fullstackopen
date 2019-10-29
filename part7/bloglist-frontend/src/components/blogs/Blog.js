@@ -59,16 +59,22 @@ const Blog = ({ blog, updateLikes, user, deleteBlog, addComment }) => {
       </Label>
       <Divider />
       <Button as="div" labelPosition="right">
-        <Button icon onClick={likeBlog}>
+        <Button icon onClick={likeBlog} data-cy="like-btn">
           <Icon name="heart" />
           Like
         </Button>
-        <Label as="a" basic pointing="left">
+        <Label as="a" basic pointing="left" data-cy="like-count">
           {blog.likes}
         </Label>
       </Button>
       {user && user.username === blog.user.username ? (
-        <Button icon labelPosition="left" onClick={handleDelete} color="red">
+        <Button
+          icon
+          labelPosition="left"
+          onClick={handleDelete}
+          color="red"
+          data-cy="delete-btn"
+        >
           <Icon name="delete" />
           Delete
         </Button>
@@ -78,9 +84,14 @@ const Blog = ({ blog, updateLikes, user, deleteBlog, addComment }) => {
       <List>{buildCommentsList(blog.comments)}</List>
       <Input
         fluid
-        action={{ icon: "plus", onClick: handleAddComment }}
+        action={{
+          icon: "plus",
+          onClick: handleAddComment,
+          "data-cy": "comment-btn"
+        }}
         placeholder="Add new comment"
         {...comment}
+        data-cy="comment-box"
       />
     </Segment>
   ) : null;

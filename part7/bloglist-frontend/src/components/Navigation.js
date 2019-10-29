@@ -9,20 +9,22 @@ const Navigation = ({ user, logoutUser }) => {
     <div>
       <Menu pointing>
         <Link to="/blogs">
-          <Menu.Item>Blogs</Menu.Item>
+          <Menu.Item data-cy="blogs-nav">Blogs</Menu.Item>
         </Link>
         <Link to="/users">
-          <Menu.Item>Users</Menu.Item>
+          <Menu.Item data-cy="users-nav">Users</Menu.Item>
         </Link>
         <Menu.Menu position="right">
           {user ? (
             <>
               <Menu.Item>{user.name} logged in</Menu.Item>
-              <Menu.Item onClick={() => logoutUser()}>Logout</Menu.Item>
+              <Menu.Item onClick={() => logoutUser()} data-cy="logout-nav">
+                Logout
+              </Menu.Item>
             </>
           ) : (
             <Link to="/login">
-              <Menu.Item>Login</Menu.Item>
+              <Menu.Item data-cy="login-nav">Login</Menu.Item>
             </Link>
           )}
         </Menu.Menu>

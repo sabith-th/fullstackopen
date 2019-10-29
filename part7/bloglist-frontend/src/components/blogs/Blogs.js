@@ -15,7 +15,13 @@ const Blogs = ({ user, sortBlogs }) => {
 
   return (
     <Segment className="blogs-section">
-      <Button onClick={sort} floated="right" compact circular>
+      <Button
+        onClick={sort}
+        floated="right"
+        compact
+        circular
+        data-cy="sort-btn"
+      >
         Sort {sortAscending ? "Ascending" : "Descending"}
       </Button>
       <Header>List of Blogs</Header>

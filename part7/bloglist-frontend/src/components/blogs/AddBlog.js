@@ -38,20 +38,20 @@ const AddBlog = ({ createBlog }) => {
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <label>Title: </label>
-          <input {...title} />
+          <input {...title} data-cy="blog-title" />
         </Form.Field>
         <Form.Field>
           <label>Author: </label>
-          <input {...author} />
+          <input {...author} data-cy="blog-author" />
         </Form.Field>
         <Form.Field>
           <label>URL: </label>
-          <input {...url} />
+          <input {...url} data-cy="blog-url" />
         </Form.Field>
         <Button.Group>
           <Button onClick={toggleVisibility}>Cancel</Button>
           <Button.Or />
-          <Button positive type="submit">
+          <Button positive type="submit" data-cy="create-blog-btn">
             Save
           </Button>
         </Button.Group>

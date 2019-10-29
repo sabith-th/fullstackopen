@@ -2,9 +2,15 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
-    "jest/globals": true
+    "jest/globals": true,
+    "cypress/globals": true,
+    commonjs: true
   },
-  extends: ["eslint:recommended", "plugin:react/recommended"],
+  extends: [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:cypress/recommended"
+  ],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",
@@ -17,7 +23,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: "module"
   },
-  plugins: ["react", "jest"],
+  plugins: ["react", "jest", "cypress"],
   rules: {
     eqeqeq: "error",
     "no-trailing-spaces": "error",

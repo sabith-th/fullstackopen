@@ -35,25 +35,28 @@ const LoginForm = ({ loginUser, signupUser }) => {
         {newUser ? (
           <Form.Field>
             <label>Name: </label>
-            <input {...name} />
+            <input {...name} data-cy="name" />
           </Form.Field>
         ) : null}
         <Form.Field>
           <label>Username: </label>
-          <input {...username} />
+          <input {...username} data-cy="username" />
         </Form.Field>
         <Form.Field>
           <label>Password: </label>
-          <input {...password} />
+          <input {...password} data-cy="password" />
         </Form.Field>
         <Form.Field>
           <Checkbox
             label="New User?"
             onClick={() => setNewUser(!newUser)}
             checked={newUser}
+            data-cy="new-user-checkbox"
           />
         </Form.Field>
-        <Button type="submit">login</Button>
+        <Button type="submit" data-cy="login">
+          login
+        </Button>
       </Form>
     </Segment>
   );

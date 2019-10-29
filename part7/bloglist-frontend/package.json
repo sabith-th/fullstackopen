@@ -24,7 +24,11 @@
     "eject": "react-scripts eject",
     "eslint": "eslint .",
     "webpack:build": "webpack --mode=production",
-    "webpack:start": "webpack-dev-server --mode=development"
+    "webpack:start": "webpack-dev-server --mode=development",
+    "e2e:test": "NODE_ENV=test npm run webpack:start",
+    "rm:coverage": "rm -rf coverage || true",
+    "cypress:open": "cypress open",
+    "check:coverage": "nyc report --reporter=text-summary --check-coverage"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,15 +48,22 @@
   "proxy": "http://localhost:3003",
   "devDependencies": {
     "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
+    "@cypress/code-coverage": "^1.10.1",
     "@testing-library/jest-dom": "^4.1.2",
     "@testing-library/react": "^9.3.0",
     "babel-loader": "^8.0.6",
+    "babel-plugin-istanbul": "^5.2.0",
     "css-loader": "^3.2.0",
+    "cypress": "^3.5.0",
+    "eslint-plugin-cypress": "^2.7.0",
     "eslint-plugin-jest": "^22.19.0",
     "eslint-plugin-react": "^7.16.0",
     "file-loader": "^4.2.0",
+    "istanbul-lib-coverage": "^2.0.5",
+    "nyc": "^14.1.1",
     "style-loader": "^1.0.0",
     "ttf-loader": "^1.0.2",
     "webpack": "^4.41.2",
