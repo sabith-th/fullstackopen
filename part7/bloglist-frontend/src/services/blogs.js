@@ -1,5 +1,10 @@
 import axios from "axios";
-const BASE_URL = "/api/blogs";
+
+let BASE_URL = "/api/blogs";
+
+if (BACKEND_URL) {
+  BASE_URL = `${BACKEND_URL}${BASE_URL}`;
+}
 
 let token = null;
 

@@ -5,7 +5,7 @@ import { sortBlogs } from "../../reducers/blogsReducer";
 import AddBlog from "./AddBlog";
 import BlogList from "./BlogList";
 
-const Blogs = ({ sortBlogs }) => {
+const Blogs = ({ user, sortBlogs }) => {
   const [sortAscending, setSortAscending] = useState(false);
 
   const sort = () => {
@@ -20,12 +20,18 @@ const Blogs = ({ sortBlogs }) => {
       </Button>
       <Header>List of Blogs</Header>
       <BlogList />
-      <AddBlog />
+      {user ? <AddBlog /> : null}
     </Segment>
   );
 };
 
+const mapStateToProps = state => {
+  return {
+    user: state.user
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   { sortBlogs }
 )(Blogs);

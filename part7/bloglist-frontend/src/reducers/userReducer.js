@@ -1,5 +1,6 @@
 import blogsService from "../services/blogs";
 import loginService from "../services/login";
+import usersService from "../services/users";
 import { setNotification } from "./notificationReducer";
 
 const reducer = (state = null, action) => {
@@ -55,6 +56,18 @@ export const initUser = () => {
   }
   return {
     type: "NONE"
+  };
+};
+
+export const signupUser = credentials => {
+  return async dispatch => {
+    try {
+      await usersService.signUp(credentials);
+      dispatch(loginUser(credentials));
+    } catch (e) {
+      console.log("Error creating in user", e);
+      dispatch(setNotification("Unable to create new user", "error", 3));
+    }
   };
 };
 
