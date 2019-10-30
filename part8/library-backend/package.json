@@ -1,0 +1,21 @@
+{
+  "name": "library-backend",
+  "version": "1.0.0",
+  "description": "A small library backend API in GraphQL implemented using Apollo Server ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "GraphQL",
+    "Apollo"
+  ],
+  "author": "Sabith T H",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.9.7",
+    "graphql": "^14.5.8",
+    "uuid": "^3.3.3"
+  }
+}
