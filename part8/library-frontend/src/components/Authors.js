@@ -25,13 +25,13 @@ const EDIT_AUTHOR = gql`
   }
 `;
 
-const Authors = props => {
+const Authors = ({ show, user }) => {
   const [born, setBorn] = useState("");
   const [selected, setSelected] = useState(null);
   const { loading, error, data } = useQuery(ALL_AUTHORS);
   const [editAuthor] = useMutation(EDIT_AUTHOR);
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
@@ -71,25 +71,27 @@ const Authors = props => {
           ))}
         </tbody>
       </table>
-      <div>
-        <h4>Set birthyear</h4>
-        <form onSubmit={submit}>
-          <Select
-            value={selected}
-            onChange={handleChange}
-            options={authorOptions}
-          />
-          <div>
-            born
-            <input
-              value={born}
-              type="number"
-              onChange={({ target }) => setBorn(target.value)}
+      {user && (
+        <div>
+          <h4>Set birthyear</h4>
+          <form onSubmit={submit}>
+            <Select
+              value={selected}
+              onChange={handleChange}
+              options={authorOptions}
             />
-          </div>
-          <button type="submit">update author</button>
-        </form>
-      </div>
+            <div>
+              born
+              <input
+                value={born}
+                type="number"
+                onChange={({ target }) => setBorn(target.value)}
+              />
+            </div>
+            <button type="submit">update author</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
