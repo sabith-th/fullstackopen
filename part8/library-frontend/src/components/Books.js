@@ -1,6 +1,7 @@
-import { useQuery } from "@apollo/react-hooks";
+import { useApolloClient } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { GENRE_QUERY } from "./Recommended";
 
 export const ALL_BOOKS = gql`
   query AllBooks {
@@ -18,27 +19,44 @@ export const ALL_BOOKS = gql`
 
 const genres = ["fantasy", "young adult", "fiction", "classic", "crime"];
 
-const Books = props => {
-  let books = [];
+const Books = ({ show }) => {
+  const [books, setBooks] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
-  const { loading, error, data } = useQuery(ALL_BOOKS);
-  if (!props.show) {
+  const client = useApolloClient();
+
+  useEffect(() => {
+    client
+      .query({ query: ALL_BOOKS, fetchPolicy: "network-only" })
+      .then(({ data }) => setBooks([...data.allBooks]))
+      .catch(e => console.log("Error getting all books", e));
+  }, [client]);
+
+  if (!show) {
     return null;
   }
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :( ${error}</p>;
-  if (data) {
-    books = [...data.allBooks];
-  }
-
-  const booksToShow = selectedGenre
-    ? books.filter(book => book.genres.includes(selectedGenre))
-    : books;
+  const filterBooks = genre => {
+    setSelectedGenre(genre);
+    if (genre) {
+      client
+        .query({
+          query: GENRE_QUERY,
+          variables: { genre },
+          fetchPolicy: "network-only"
+        })
+        .then(({ data }) => setBooks([...data.allBooks]))
+        .catch(e => console.log("Error getting filtered books", e));
+    } else {
+      client
+        .query({ query: ALL_BOOKS, fetchPolicy: "network-only" })
+        .then(({ data }) => setBooks([...data.allBooks]))
+        .catch(e => console.log("Error getting all books", e));
+    }
+  };
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>Books</h2>
       <table>
         <tbody>
           <tr>
@@ -46,7 +64,7 @@ const Books = props => {
             <th>Author</th>
             <th>Published</th>
           </tr>
-          {booksToShow.map(a => (
+          {books.map(a => (
             <tr key={a.id}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -59,7 +77,7 @@ const Books = props => {
         {genres.map(genre => (
           <button
             key={genre}
-            onClick={() => setSelectedGenre(genre)}
+            onClick={() => filterBooks(genre)}
             style={{
               backgroundColor: selectedGenre === genre ? "green" : null
             }}
@@ -67,7 +85,8 @@ const Books = props => {
             {genre}
           </button>
         ))}
-        <button onClick={() => setSelectedGenre(null)}>all genres</button>
+
+        <button onClick={() => filterBooks(null)}>all genres</button>
       </div>
     </div>
   );

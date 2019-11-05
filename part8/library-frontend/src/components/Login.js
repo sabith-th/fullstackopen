@@ -13,7 +13,17 @@ const LOGIN = gql`
 const Login = ({ show, login: loginUser }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { error, data }] = useMutation(LOGIN);
+  const [login, { error }] = useMutation(LOGIN, {
+    update(
+      cache,
+      {
+        data: { login }
+      }
+    ) {
+      const { value } = login;
+      loginUser(value);
+    }
+  });
 
   if (!show) {
     return null;
@@ -21,14 +31,12 @@ const Login = ({ show, login: loginUser }) => {
 
   const submit = e => {
     e.preventDefault();
-    login({ variables: { username, password } });
+    login({
+      variables: { username, password }
+    });
     setUsername("");
     setPassword("");
   };
-
-  if (data) {
-    loginUser(data.login.value);
-  }
 
   return (
     <div>
