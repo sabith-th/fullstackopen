@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import React, { useState } from "react";
 import { ALL_AUTHORS } from "./Authors";
-import { ALL_BOOKS } from "./Books";
+import { ALL_BOOKS, BOOK_DETAILS } from "./Books";
 
 const ADD_BOOK = gql`
   mutation AddBook(
@@ -17,14 +17,10 @@ const ADD_BOOK = gql`
       published: $published
       genres: $genres
     ) {
-      title
-      author {
-        name
-      }
-      id
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `;
 
 const NewBook = props => {

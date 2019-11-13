@@ -10,6 +10,8 @@ const Book = require("./models/book");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
+const { PubSub } = require("apollo-server");
+const pubsub = new PubSub();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -64,6 +66,9 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
+  type Subscription {
+    bookAdded: Book!
+  }
 `;
 
 const getBookCount = async authorId => {
@@ -103,20 +108,20 @@ const resolvers = {
       return books;
     },
     allAuthors: async () => {
-      const authors = await Author.find({});
+      const authors = await Author.find({}).populate("books");
       return authors;
     }
   },
   Author: {
-    bookCount: async root => getBookCount(root._id)
+    bookCount: async root => root.books.length
   },
   Book: {
     author: async root => {
-      const author = await Author.findById(root.author);
+      const author = await Author.findById(root.author).populate("books");
       const response = {
         ...author._doc,
         id: author._id,
-        bookCount: await getBookCount(root.author)
+        bookCount: author.books.length
       };
       return response;
     }
@@ -129,14 +134,19 @@ const resolvers = {
 
       try {
         let authorId;
-        const author = await Author.findOne({ name: args.author });
+        let author = await Author.findOne({ name: args.author }).populate(
+          "books"
+        );
         if (author) {
           authorId = author._id;
         } else {
-          const newAuthor = await new Author({ name: args.author }).save();
-          authorId = newAuthor._id;
+          author = await new Author({ name: args.author }).save();
+          authorId = author._id;
         }
         const newBook = await new Book({ ...args, author: authorId }).save();
+        author.books = author.books.concat(newBook._id);
+        author.save();
+        pubsub.publish("BOOK_ADDED", { bookAdded: newBook });
         return newBook;
       } catch (e) {
         throw new UserInputError(e.message, { invalidArgs: args });
@@ -147,7 +157,9 @@ const resolvers = {
         throw new AuthenticationError("Not Authenticated");
       }
 
-      const author = await Author.findOne({ name: args.name });
+      const author = await Author.findOne({ name: args.name }).populate(
+        "books"
+      );
       if (!author) {
         return null;
       }
@@ -180,6 +192,11 @@ const resolvers = {
       };
 
       return { value: jwt.sign(userForToken, JWT_SECRET) };
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(["BOOK_ADDED"])
     }
   }
 };
